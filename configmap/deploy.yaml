@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: default
+data:
+  application.properties: |
+    setting=value
+    test.property=0
+  ui.properties: |
+    ui.colourscheme=light
+    ui.disabled=false
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: configmap-test-pod
+spec:
+  containers:
+    - name: configmap-test
+      image: nginx
+      volumeMounts:
+      - name: config-volume
+        mountPath: /etc/config
+  volumes:
+    - name: config-volume
+      configMap:
+        name: app-config
+        items:
+        - key: application.properties
+          path: application-properties
+        - key: ui.properties
+          path: ui.properties
+
+
